@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text2Pen - Handwriting Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* shadow-lg */
+            padding: 2.5rem; /* p-10 */
+            width: 100%;
+            max-width: 1200px; /* max-w-4xl, adjusted for more space */
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            .main-content {
+                display: grid;
+                grid-template-columns: 2fr 1fr; /* Two columns, left wider */
+                gap: 2rem;
+            }
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select,
+        .form-group input[type="number"],
+        .form-group input[type="color"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem; /* rounded-md */
+            font-size: 1rem;
+            color: #374151;
+            transition: border-color 0.2s;
+        }
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus,
+        .form-group input[type="number"]:focus,
+        .form-group input[type="color"]:focus {
+            outline: none;
+            border-color: #2563eb; /* blue-600 */
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        .form-group input[type="file"] {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            width: 100%;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .slider-container input[type="range"] {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .slider-value {
+            min-width: 30px;
+            text-align: right;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .radio-group input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+        .radio-group input[type="radio"]:checked {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+        .radio-group input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .checkbox-group input[type="checkbox"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 0.25rem;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            background-color: #fff;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .checkbox-group input[type="checkbox"]:checked {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+        .checkbox-group input[type="checkbox"]:checked::before {
+            content: '✓';
+            display: block;
+            color: #fff;
+            font-size: 14px;
+            line-height: 1;
+            text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #2563eb; /* blue-600 */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8; /* blue-700 */
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* gray-500 */
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* gray-600 */
+            transform: translateY(-1px);
+        }
+        .output-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .output-section img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message-box {
+            background-color: #e0f2fe; /* light blue */
+            border: 1px solid #90cdf4; /* darker blue */
+            color: #2c5282; /* dark blue text */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-6">✍️ Text2Pen</h1>
+        <p class="text-center text-gray-600 mb-8">Easily convert your text into realistic handwriting on A4 paper.</p>
+
+        <form id="handwritingForm" class="space-y-6">
+            <div class="main-content">
+                <!-- Left Column: Text Input & Controls -->
+                <div class="space-y-6">
+                    <div class="form-group">
+                        <label for="textinput">Enter Text</label>
+                        <textarea id="textinput" name="textinput" rows="12" class="resize-y" placeholder="Type or paste your text here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="textfile">Or Upload Text File (.txt)</label>
+                        <input type="file" id="textfile" name="textfile" accept=".txt">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label for="font_choice">Handwriting Font</label>
+                            <select id="font_choice" name="font_choice">
+                                <option value="Julian Hand">Julian Hand</option>
+                                <option value="Kevin Flower">Kevin Flower</option>
+                                <option value="Upload your own">Upload your own</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="fontfile_group" style="display: none;">
+                            <label for="fontfile">Upload TTF Font</label>
+                            <input type="file" id="fontfile" name="fontfile" accept=".ttf">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="form-group">
+                            <label for="bg_choice">Background</label>
+                            <select id="bg_choice" name="bg_choice">
+                                <option value="Blank (White)">Blank (White)</option>
+                                <option value="Ruled Paper">Ruled Paper</option>
+                                <option value="Upload your own">Upload your own</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="bgfile_group" style="display: none;">
+                            <label for="bgfile">Upload Background Image (PNG/JPG)</label>
+                            <input type="file" id="bgfile" name="bgfile" accept=".png,.jpg,.jpeg">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="color">Handwriting Color</label>
+                        <input type="color" id="color" name="color" value="#000000">
+                    </div>
+                </div>
+
+                <!-- Right Column: Customization -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-semibold text-gray-700">Advanced Options</h3>
+                    <div class="form-group">
+                        <label for="fontsize">Font Size (pt)</label>
+                        <div class="slider-container">
+                            <input type="range" id="fontsize" name="fontsize" min="24" max="120" value="72" step="1">
+                            <span class="slider-value" id="fontsize_value">72</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="linespacing">Line Spacing (px)</label>
+                        <div class="slider-container">
+                            <input type="range" id="linespacing" name="linespacing" min="0" max="50" value="10" step="1">
+                            <span class="slider-value" id="linespacing_value">10</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="margin">Margin (px)</label>
+                        <div class="slider-container">
+                            <input type="range" id="margin" name="margin" min="20" max="200" value="70" step="1">
+                            <span class="slider-value" id="margin_value">70</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="jitter">Jitter (px, for natural look)</label>
+                        <div class="slider-container">
+                            <input type="range" id="jitter" name="jitter" min="0" max="10" value="0" step="1">
+                            <span class="slider-value" id="jitter_value">0</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Columns per Page</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="columns" value="1" checked> 1</label>
+                            <label><input type="radio" name="columns" value="2"> 2</label>
+                            <label><input type="radio" name="columns" value="3"> 3</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="preview_first" name="preview_first" checked>
+                            Preview Only First Page
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                <button type="submit" id="generateImageBtn" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-4 3 3 5-5V15z" clip-rule="evenodd" />
+                    </svg>
+                    Generate Image
+                </button>
+                <button type="button" id="generatePdfBtn" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0113 3.414L16.586 7A2 2 0 0117 8.414V16a2 2 0 01-2 2H5a2 2 0 01-2-2V4zm5 2.5V7a1 1 0 00-1-1H6a1 1 0 00-1 1v1a1 1 0 001 1h2a1 1 0 001-1V6.5zm5 0V7a1 1 0 00-1-1h-2a1 1 0 00-1 1v1a1 1 0 001 1h2a1 1 0 001-1V6.5z" clip-rule="evenodd" />
+                    </svg>
+                    Generate & Download PDF
+                </button>
+            </div>
+        </form>
+
+        <div id="messageBox" class="message-box"></div>
+        <div class="loading-spinner mx-auto mt-8" id="loadingSpinner"></div>
+
+        <!-- Output Section -->
+        <div class="output-section mt-8">
+            <h3 class="text-xl font-semibold text-gray-700">Output Preview</h3>
+            <img id="outputImage" src="" alt="Generated Handwriting" class="hidden w-full max-w-lg">
+            <a id="downloadPdfLink" href="#" class="btn btn-primary hidden" download="handwriting.pdf">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Download PDF
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = "http://localhost:8000"; // Change this to your Hugging Face Space URL if deployed
+
+        const form = document.getElementById('handwritingForm');
+        const textfileInput = document.getElementById('textfile');
+        const textinput = document.getElementById('textinput');
+        const fontChoice = document.getElementById('font_choice');
+        const fontfileGroup = document.getElementById('fontfile_group');
+        const bgChoice = document.getElementById('bg_choice');
+        const bgfileGroup = document.getElementById('bgfile_group');
+        const generateImageBtn = document.getElementById('generateImageBtn');
+        const generatePdfBtn = document.getElementById('generatePdfBtn');
+        const outputImage = document.getElementById('outputImage');
+        const downloadPdfLink = document.getElementById('downloadPdfLink');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const messageBox = document.getElementById('messageBox');
+
+        // Update slider value displays
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            const valueSpan = document.getElementById(`${slider.id}_value`);
+            slider.addEventListener('input', () => {
+                valueSpan.textContent = slider.value;
+            });
+        });
+
+        // Toggle font file upload based on font choice
+        fontChoice.addEventListener('change', () => {
+            if (fontChoice.value === 'Upload your own') {
+                fontfileGroup.style.display = 'block';
+            } else {
+                fontfileGroup.style.display = 'none';
+            }
+        });
+
+        // Toggle background file upload based on background choice
+        bgChoice.addEventListener('change', () => {
+            if (bgChoice.value === 'Upload your own') {
+                bgfileGroup.style.display = 'block';
+            } else {
+                bgfileGroup.style.display = 'none';
+            }
+        });
+
+        // Function to display messages
+        function showMessage(message, type = 'info') {
+            messageBox.textContent = message;
+            messageBox.className = `message-box block mt-4 p-3 rounded-md ${
+                type === 'error' ? 'bg-red-100 border-red-400 text-red-700' :
+                type === 'success' ? 'bg-green-100 border-green-400 text-green-700' :
+                'bg-blue-100 border-blue-400 text-blue-700'
+            }`;
+            messageBox.style.display = 'block';
+        }
+
+        function hideMessage() {
+            messageBox.style.display = 'none';
+        }
+
+        async function handleSubmit(event, downloadPdf = false) {
+            event.preventDefault();
+            hideMessage();
+            outputImage.classList.add('hidden');
+            outputImage.src = ''; // Clear previous image
+            downloadPdfLink.classList.add('hidden');
+            downloadPdfLink.href = '#';
+            loadingSpinner.style.display = 'block'; // Show spinner
+
+            const formData = new FormData();
+
+            // Text input or file
+            if (textfileInput.files.length > 0) {
+                formData.append('textfile', textfileInput.files[0]);
+            } else if (textinput.value.trim()) {
+                formData.append('textinput', textinput.value);
+            } else {
+                showMessage("Please enter text or upload a text file.", "error");
+                loadingSpinner.style.display = 'none';
+                return;
+            }
+
+            // Append other form data
+            formData.append('font_choice', fontChoice.value);
+            if (fontChoice.value === 'Upload your own' && document.getElementById('fontfile').files.length > 0) {
+                formData.append('fontfile', document.getElementById('fontfile').files[0]);
+            }
+            formData.append('fontsize', document.getElementById('fontsize').value);
+            formData.append('linespacing', document.getElementById('linespacing').value);
+            formData.append('margin', document.getElementById('margin').value);
+            formData.append('jitter', document.getElementById('jitter').value);
+            formData.append('columns', document.querySelector('input[name="columns"]:checked').value);
+            formData.append('bg_choice', bgChoice.value);
+            if (bgChoice.value === 'Upload your own' && document.getElementById('bgfile').files.length > 0) {
+                formData.append('bgfile', document.getElementById('bgfile').files[0]);
+            }
+            formData.append('color', document.getElementById('color').value);
+            formData.append('preview_first', document.getElementById('preview_first').checked);
+            formData.append('download_pdf', downloadPdf); // Control PDF generation
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate_handwriting`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+                }
+
+                if (downloadPdf) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    downloadPdfLink.href = url;
+                    downloadPdfLink.download = 'handwriting.pdf'; // Ensure the download attribute is set
+                    downloadPdfLink.classList.remove('hidden');
+                    showMessage("PDF generated successfully! Click 'Download PDF' to save.", "success");
+                } else {
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    outputImage.src = imageUrl;
+                    outputImage.classList.remove('hidden');
+                    showMessage("Image generated successfully!", "success");
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage(`Failed to generate handwriting: ${error.message}`, "error");
+            } finally {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+            }
+        }
+
+        generateImageBtn.addEventListener('click', (e) => handleSubmit(e, false));
+        generatePdfBtn.addEventListener('click', (e) => handleSubmit(e, true));
+
+        // Initial state setup for file upload fields
+        fontChoice.dispatchEvent(new Event('change'));
+        bgChoice.dispatchEvent(new Event('change'));
+
+        // Set initial demo text
+        textinput.value = `Domain0 in Xen runs all the device drivers for the host machine hardware Hardware virtualization extensions do NOT offer binary translation acceleration TinyOS does NOT support updating part of the code at runtime Grant regions in Tock OS do NOT store kernel states Short QnA-- Here is pseudocode of a simple spinlock implementation using test-and-set: This code achieves mutual exclusion, but what are the two potential problems of this lock implementation? Answer: No bounded waiting → starvation High cache coherence traffic due to frequent test-and-set on the same memory location Consider a hypothetical hard disk drive with 3000 RPM, 100MB/s of data transfer rate, and 10 ms of seek time. If the file system reads data from the disk in a block size of 2MB per access, the latency is [ ] ms and the throughput is [ ] MB/s. Latency: 0.04 seconds (or 40 ms) Throughput: 50 MB/s Consider a virtualization scenario where the hypervisor and the guest OS use 4-level paging. If nested/extended paging is used, what is the number of memory accesses required to translate a guest virtual address to a host physical address? Also, what is the number for shadow paging? Nested/Extended Paging: 21 memory accesses Shadow Paging: 5 memory accesses Why event-driven systems can be more memory efficient than multi-threaded systems? Event-driven systems use a single stack for scheduling tasks, as opposed to multi-threaded systems which require a separate stack per thread, thus using more memory. `;
+    </script>
+</body>
+</html>
+
