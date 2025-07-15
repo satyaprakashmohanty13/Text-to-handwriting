@@ -3,266 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 Magic Handwriting Fun! ✨</title>
+    <title>✍️ Text to Handwriting Converter</title>
     <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Balsamiq Sans for a playful feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Inter for general text -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
         /* Custom styles for body and form elements */
         body {
-            font-family: 'Balsamiq Sans', cursive; /* Playful font */
-            background-color: #F8F2FF; /* Very light purple background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh; /* Ensure it takes full viewport height */
-            padding: 1rem; /* Add some padding for smaller screens */
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
         }
         .container {
-            max-width: 1000px; /* Increased from 900px */
-            background-color: #FFFFFF; /* White background for the card */
-            border-radius: 20px; /* More rounded corners for a softer look */
-            box-shadow: 0 10px 30px rgba(106, 103, 232, 0.2); /* Playful shadow */
-            /* Adjusted padding to give more width to inner elements on smaller screens */
-            padding: 1rem; /* Reduced padding for mobile to allow more width */
+            max-width: 900px; /* Max width for the main content area */
         }
-
-        /* Responsive padding for container */
-        @media (min-width: 640px) { /* sm breakpoint */
-            .container {
-                padding: 2rem; /* Slightly more padding for small desktops/tablets */
-            }
-        }
-        @media (min-width: 768px) { /* md breakpoint */
-            .container {
-                padding: 3rem; /* Original padding for larger screens */
-            }
-        }
-
         .form-label {
-            @apply block text-base font-bold text-purple-700 mb-2; /* Brighter, bolder labels */
+            @apply block text-sm font-medium text-gray-700 mb-1;
         }
-        .form-input, .form-textarea {
-            /* Textarea and other inputs will now naturally expand with container */
-            @apply mt-1 block w-full py-3 border border-purple-300 rounded-xl shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-base; /* Larger, more rounded inputs */
-            padding-left: 1rem; /* Add back specific horizontal padding for inputs */
-            padding-right: 1rem;
+        .form-input, .form-select, .form-textarea {
+            @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm;
         }
-        .form-select {
-            /* Adjusted for a shorter appearance and decreased width */
-            @apply mt-1 block px-4 py-2 border border-purple-300 rounded-xl shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-base;
-            height: 48px; /* Explicit height for better control */
-            line-height: 1.5; /* Adjust line height for vertical alignment */
-            width: 75%; /* Decreased width, e.g., 75% of parent */
-            max-width: 400px; /* Optional: set a max-width to prevent it from getting too wide on large screens */
-        }
-        /* Center the select element if its width is less than 100% */
-        .form-select-wrapper {
-            display: flex;
-            justify-content: center; /* Center the dropdown */
-        }
-
-
         .btn-primary {
-            /* SIGNIFICANTLY larger button with maximum rounding */
-            @apply inline-flex justify-center items-center py-6 px-12 border border-transparent shadow-lg text-3xl font-bold rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105;
-            background-image: linear-gradient(to right, #6A67E8, #8E67E8); /* Gradient for buttons */
-            min-width: 280px; /* Ensure a minimum width */
-            min-height: 80px; /* Ensure a minimum height */
+            @apply inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out;
         }
-        .btn-primary:hover {
-            background-image: linear-gradient(to right, #8E67E8, #6A67E8); /* Reverse gradient on hover */
-        }
-        .btn-green {
-            background-image: linear-gradient(to right, #7ED957, #A8E657); /* Green gradient for download */
-        }
-        .btn-green:hover {
-            background-image: linear-gradient(to right, #A8E657, #7ED957); /* Reverse green gradient on hover */
-        }
-
         .radio-group {
-            @apply flex flex-wrap items-center space-x-4 sm:space-x-6; /* Spacing for radio buttons, responsive */
+            @apply flex items-center space-x-4; /* Spacing for radio buttons */
         }
         .radio-label {
-            @apply ml-2 block text-base text-gray-800;
+            @apply ml-2 block text-sm text-gray-900;
         }
-        /* Custom radio button styling */
-        .form-radio {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            display: inline-block;
-            width: 1.25rem; /* Larger radio buttons */
-            height: 1.25rem;
-            border: 2px solid #A78BFA; /* Purple border */
-            border-radius: 50%;
-            position: relative;
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s ease-in-out;
-        }
-        .form-radio:checked {
-            background-color: #6A67E8; /* Purple fill when checked */
-            border-color: #6A67E8;
-        }
-        .form-radio:checked::after {
-            content: '';
-            display: block;
-            width: 0.5rem;
-            height: 0.5rem;
-            border-radius: 50%;
-            background-color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
         /* Loading spinner animation */
         .loading-spinner {
-            border: 4px solid rgba(106, 103, 232, 0.2); /* Light purple for spinner base */
-            border-left-color: #6A67E8; /* Playful purple for spinner */
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #6366f1; /* Indigo color for spinner */
             border-radius: 50%;
-            width: 32px; /* Even larger spinner */
-            height: 32px;
+            width: 24px;
+            height: 24px;
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* Slider styling */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 10px;
-            background: #E0BBE4; /* Light pink/purple track */
-            border-radius: 5px;
-            outline: none;
-            opacity: 0.7;
-            transition: opacity .2s;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px; /* Larger thumb */
-            height: 25px;
-            border-radius: 50%;
-            background: #6A67E8; /* Playful purple thumb */
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: #6A67E8;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        /* File input styling */
-        input[type="file"]::file-selector-button {
-            background-image: linear-gradient(to right, #A78BFA, #C4B5FD); /* Lighter purple gradient */
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px; /* Fully rounded */
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        input[type="file"]::file-selector-button:hover {
-            background-image: linear-gradient(to right, #C4B5FD, #A78BFA); /* Reverse gradient on hover */
-            transform: translateY(-1px);
-        }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 sm:p-6 md:p-8">
     <div class="container mx-auto bg-white p-6 sm:p-8 rounded-lg shadow-lg">
-        <h1 class="text-4xl sm:text-5xl font-bold text-center text-purple-800 mb-6 flex items-center justify-center gap-3">
-            ✏️ Magic Handwriting Fun! ✨
-        </h1>
-        <p class="text-center text-gray-600 mb-8 text-base sm:text-lg leading-relaxed">
-            Type your words, pick a bouncy font (or upload your own!), and watch them transform into
-            super cool handwriting! You can even choose the color and add a fun paper background.
-            Get ready to create awesome notes and drawings! 🚀
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">✍️ Text to Handwriting Converter</h1>
+        <p class="text-center text-gray-600 mb-8">
+            Enter your text, upload a TrueType Font (.ttf) file (or choose from pre-installed ones),
+            and convert it into a PDF document that looks like it's written in your own handwriting!
+            You can also customize the size, color, and add an optional paper background.
+            A preview image and a downloadable PDF will be generated.
         </p>
 
         <form id="handwritingForm" class="space-y-6">
             <div>
-                <label for="textInput" class="form-label">✍️ What do you want to write?</label>
-                <textarea id="textInput" name="textInput" rows="8" class="form-textarea" placeholder="Type your secret message or fun story here..." required></textarea>
-            </div>
-
-            <!-- Reverted to original order: Upload first, then Choose -->
-            <div>
-                <label for="fontFile" class="form-label">⬆️ Upload your special font (.ttf file):</label>
-                <input type="file" id="fontFile" name="fontFile" accept=".ttf" class="form-input">
+                <label for="textInput" class="form-label">Enter your text here:</label>
+                <textarea id="textInput" name="textInput" rows="10" class="form-textarea" placeholder="Type or paste your text..." required></textarea>
             </div>
 
             <div>
-                <label for="selectedFontName" class="form-label">🌈 Choose a playful font:</label>
-                <div class="form-select-wrapper">
-                    <select id="selectedFontName" name="selectedFontName" class="form-select">
-                        <option value="None">None (or upload your own!)</option>
-                        <!-- Options for pre-installed fonts will be populated by JavaScript -->
-                    </select>
-                </div>
+                <label for="fontFile" class="form-label">Upload your .ttf font file (Overrides selected font):</label>
+                <input type="file" id="fontFile" name="fontFile" accept=".ttf" class="form-input file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
             </div>
 
             <div>
-                <label for="fontSize" class="form-label">📏 Handwriting Size: <span id="fontSizeValue">16</span>px</label>
+                <label for="selectedFontName" class="form-label">Choose from pre-installed fonts:</label>
+                <select id="selectedFontName" name="selectedFontName" class="form-select">
+                    <option value="None">None</option>
+                    <!-- Options for pre-installed fonts will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <div>
+                <label for="fontSize" class="form-label">Handwriting Size: <span id="fontSizeValue">16</span>px</label>
                 <input type="range" id="fontSize" name="fontSize" min="10" max="72" value="16" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
             </div>
 
             <div>
-                <label class="form-label">🎨 Handwriting Color:</label>
+                <label class="form-label">Handwriting Color:</label>
                 <div class="radio-group">
                     <label class="inline-flex items-center">
                         <input type="radio" name="fontColor" value="Black" class="form-radio text-indigo-600" checked>
-                        <span class="radio-label">🖤 Black</span>
+                        <span class="radio-label">Black</span>
                     </label>
                     <label class="inline-flex items-center">
                         <input type="radio" name="fontColor" value="Blue" class="form-radio text-indigo-600">
-                        <span class="radio-label">💙 Blue</span>
+                        <span class="radio-label">Blue</span>
                     </label>
                     <label class="inline-flex items-center">
                         <input type="radio" name="fontColor" value="Red" class="form-radio text-indigo-600">
-                        <span class="radio-label">❤️ Red</span>
+                        <span class="radio-label">Red</span>
                     </label>
                 </div>
             </div>
 
             <div>
-                <label for="backgroundImage" class="form-label">🖼️ Add a cool paper background (Optional):</label>
-                <input type="file" id="backgroundImage" name="backgroundImage" accept="image/*" class="form-input">
+                <label for="backgroundImage" class="form-label">Upload Paper Background (Optional):</label>
+                <input type="file" id="backgroundImage" name="backgroundImage" accept="image/*" class="form-input file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
             </div>
 
             <button type="submit" class="btn-primary w-full flex items-center justify-center">
-                <span id="submitText">✨ Make it Magical! ✨</span>
-                <div id="loadingSpinner" class="loading-spinner ml-3 hidden"></div>
+                <span id="submitText">Generate Handwriting</span>
+                <div id="loadingSpinner" class="loading-spinner ml-2 hidden"></div>
             </button>
         </form>
 
         <div id="messageContainer" class="mt-6 p-4 rounded-md text-sm" style="display: none;"></div>
 
-        <div id="outputSection" class="mt-8 border-t border-purple-200 pt-8 hidden">
-            <h2 class="text-2xl font-bold text-purple-800 mb-4 flex items-center gap-2">
-                🎉 Your Masterpiece!
-            </h2>
+        <div id="outputSection" class="mt-8 border-t pt-8 hidden">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Results:</h2>
             <div class="mb-6">
-                <h3 class="text-xl font-semibold text-gray-700 mb-3">Preview:</h3>
-                <img id="previewImage" src="" alt="Handwriting Preview" class="w-full h-auto rounded-xl shadow-xl border-4 border-purple-300" style="max-height: 600px; object-fit: contain;">
+                <h3 class="text-lg font-medium text-gray-700 mb-2">Handwriting Preview:</h3>
+                <img id="previewImage" src="" alt="Handwriting Preview" class="w-full h-auto rounded-md shadow-md border border-gray-200" style="max-height: 600px; object-fit: contain;">
             </div>
             <div>
-                <h3 class="text-xl font-semibold text-gray-700 mb-3">Download your fun creation:</h3>
-                <a id="downloadPdfLink" href="#" download="magic_handwriting.pdf" class="btn-primary btn-green">⬇️ Download PDF!</a>
+                <h3 class="text-lg font-medium text-gray-700 mb-2">Download PDF:</h3>
+                <a id="downloadPdfLink" href="#" download="handwriting.pdf" class="btn-primary bg-green-600 hover:bg-green-700">Download PDF</a>
             </div>
         </div>
     </div>
@@ -297,7 +155,7 @@
         async function fetchFonts() {
             // Check if BACKEND_URL is still the placeholder
             if (BACKEND_URL === 'https://YOUR_HF_SPACE_URL') {
-                showMessage('Oops! Please update the BACKEND_URL in the JavaScript code (index.html) with your actual Hugging Face Space URL to make the magic happen!', 'error');
+                showMessage('Please update the BACKEND_URL in the JavaScript code (index.html) with your actual Hugging Face Space URL.', 'error');
                 return; // Stop execution if URL is not updated
             }
 
@@ -307,7 +165,7 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                selectedFontName.innerHTML = '<option value="None">None (or upload your own!)</option>'; // Reset dropdown, add 'None' option
+                selectedFontName.innerHTML = '<option value="None">None</option>'; // Reset dropdown, add 'None' option
                 data.fonts.forEach(font => {
                     if (font !== "None") { // Avoid adding "None" twice
                         const option = document.createElement('option');
@@ -318,7 +176,7 @@
                 });
             } catch (error) {
                 console.error('Error fetching fonts:', error);
-                showMessage('Uh oh! There was a problem loading the pre-installed fonts. Please make sure your backend is running and the BACKEND_URL is correct. Details: ' + error.message, 'error');
+                showMessage('Error loading pre-installed fonts. Please ensure your backend is running and the BACKEND_URL is correct. Details: ' + error.message, 'error');
             }
         }
 
@@ -328,11 +186,11 @@
             messageContainer.style.display = 'block';
             // Apply Tailwind classes based on message type
             if (type === 'error') {
-                messageContainer.className = 'mt-6 p-4 rounded-xl text-base bg-red-100 text-red-700 font-semibold border border-red-300';
+                messageContainer.className = 'mt-6 p-4 rounded-md text-sm bg-red-100 text-red-700';
             } else if (type === 'success') {
-                messageContainer.className = 'mt-6 p-4 rounded-xl text-base bg-green-100 text-green-700 font-semibold border border-green-300';
+                messageContainer.className = 'mt-6 p-4 rounded-md text-sm bg-green-100 text-green-700';
             } else {
-                messageContainer.className = 'mt-6 p-4 rounded-xl text-base bg-blue-100 text-blue-700 font-semibold border border-blue-300';
+                messageContainer.className = 'mt-6 p-4 rounded-md text-sm bg-blue-100 text-blue-700';
             }
         }
 
@@ -349,12 +207,12 @@
 
             // Check if BACKEND_URL is still the placeholder before submitting
             if (BACKEND_URL === 'https://YOUR_HF_SPACE_URL') {
-                showMessage('Oops! Please update the BACKEND_URL in the JavaScript code (index.html) with your actual Hugging Face Space URL to make the magic happen!', 'error');
+                showMessage('Please update the BACKEND_URL in the JavaScript code (index.html) with your actual Hugging Face Space URL.', 'error');
                 return; // Stop submission
             }
 
             // Show loading state
-            submitText.textContent = 'Making Magic... 🪄';
+            submitText.textContent = 'Generating...';
             loadingSpinner.classList.remove('hidden');
             submitButton.disabled = true; // Disable button to prevent multiple submissions
 
@@ -365,7 +223,6 @@
             formData.append('font_color', document.querySelector('input[name="fontColor"]:checked').value);
 
             // Append font file or selected font name based on user input
-            // The order here matches the new HTML order for logical flow
             if (fontFile.files.length > 0) {
                 formData.append('font_file', fontFile.files[0]);
             } else {
@@ -401,14 +258,14 @@
                 previewImage.src = imageUrl;
                 downloadPdfLink.href = pdfUrl;
                 outputSection.classList.remove('hidden'); // Show the results section
-                showMessage('Yay! Your handwriting magic is ready!', 'success');
+                showMessage('Handwriting generated successfully!', 'success');
 
             } catch (error) {
                 console.error('Error:', error);
-                showMessage(`Oh no! Something went wrong while making your handwriting: ${error.message}. Please make sure your backend is running and the BACKEND_URL is correct.`, 'error');
+                showMessage(`Error generating handwriting: ${error.message}. Please ensure your backend is running and the BACKEND_URL is correct.`, 'error');
             } finally {
                 // Reset loading state and re-enable the button
-                submitText.textContent = '✨ Make it Magical! ✨';
+                submitText.textContent = 'Generate Handwriting';
                 loadingSpinner.classList.add('hidden');
                 submitButton.disabled = false;
             }
