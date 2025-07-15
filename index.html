@@ -20,23 +20,23 @@
             padding: 1rem; /* Add some padding for smaller screens */
         }
         .container {
-            /* Increased max-width to allow content to stretch more */
             max-width: 1000px; /* Increased from 900px */
             background-color: #FFFFFF; /* White background for the card */
             border-radius: 20px; /* More rounded corners for a softer look */
             box-shadow: 0 10px 30px rgba(106, 103, 232, 0.2); /* Playful shadow */
-            padding: 1.5rem; /* Adjust padding for mobile */
+            /* Adjusted padding to give more width to inner elements on smaller screens */
+            padding: 1rem; /* Reduced padding for mobile to allow more width */
         }
 
         /* Responsive padding for container */
         @media (min-width: 640px) { /* sm breakpoint */
             .container {
-                padding: 2.5rem;
+                padding: 2rem; /* Slightly more padding for small desktops/tablets */
             }
         }
         @media (min-width: 768px) { /* md breakpoint */
             .container {
-                padding: 3rem;
+                padding: 3rem; /* Original padding for larger screens */
             }
         }
 
@@ -45,7 +45,9 @@
         }
         .form-input, .form-textarea {
             /* Textarea and other inputs will now naturally expand with container */
-            @apply mt-1 block w-full px-4 py-3 border border-purple-300 rounded-xl shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-base; /* Larger, more rounded inputs */
+            @apply mt-1 block w-full py-3 border border-purple-300 rounded-xl shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-base; /* Larger, more rounded inputs */
+            padding-left: 1rem; /* Add back specific horizontal padding for inputs */
+            padding-right: 1rem;
         }
         .form-select {
             /* Adjusted for a shorter appearance and decreased width */
@@ -198,6 +200,12 @@
                 <textarea id="textInput" name="textInput" rows="8" class="form-textarea" placeholder="Type your secret message or fun story here..." required></textarea>
             </div>
 
+            <!-- Reverted to original order: Upload first, then Choose -->
+            <div>
+                <label for="fontFile" class="form-label">⬆️ Upload your special font (.ttf file):</label>
+                <input type="file" id="fontFile" name="fontFile" accept=".ttf" class="form-input">
+            </div>
+
             <div>
                 <label for="selectedFontName" class="form-label">🌈 Choose a playful font:</label>
                 <div class="form-select-wrapper">
@@ -206,11 +214,6 @@
                         <!-- Options for pre-installed fonts will be populated by JavaScript -->
                     </select>
                 </div>
-            </div>
-
-            <div>
-                <label for="fontFile" class="form-label">⬆️ Upload your special font (.ttf file):</label>
-                <input type="file" id="fontFile" name="fontFile" accept=".ttf" class="form-input">
             </div>
 
             <div>
